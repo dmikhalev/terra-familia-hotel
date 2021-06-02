@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>Login</title>
+</head>
+<body>
+
+<form method="get">
+    <nav class="navbar navbar-expand-lg  navbar-dark bg-dark fixed-top navbar-custom" id="navigation" style="background: #2d3b47">
+        <a class="navbar-brand" href="/index">Terra familia</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/find-room">Комнаты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/comments">Отзывы</a>
+                </li>
+            </ul>
+            <ul sec:authorize="hasRole('ADMIN')" class="navbar-nav ml-auto navbar-buttons-group">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/clients">Клиенты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/booking">Брони</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/payment">Оплаты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/edit">Редактировать</a>
+                </li>
+            </ul>
+            <button class="btn btn-outline-success my-2 my-sm-0" th:formaction="@{/find-room}" type="submit">
+                Забронировать
+            </button>
+            <button sec:authorize="isAuthenticated()" class="btn btn-outline-primary my-2 my-sm-0"
+                    th:formaction="@{/logout}" type="submit" style="margin-left: 10px">
+                Выйти
+            </button>
+        </div>
+    </nav>
+</form>
+
+<div class="container-fluid text-center" style="padding-top: 155px">
+
+    <form th:action="@{/signin}" method="post" style="max-width: 350px; margin: 0 auto;">
+
+        <div class="border border-secondary p-3 rounded">
+            <p>Войти в аккаунт администратора</p>
+            <p>
+                <input type="text" class="form-control" id="txtUsername" name="txtUsername"
+                       placeholder="Username">
+            </p>
+            <p>
+                <input type="password" class="form-control" id="txtPassword" name="txtPassword"
+                       placeholder="Password">
+            </p>
+            <p>
+                <button type="submit" class="btn btn-success">Войти</button>
+            </p>
+        </div>
+    </form>
+</div>
+</body>
+</html>

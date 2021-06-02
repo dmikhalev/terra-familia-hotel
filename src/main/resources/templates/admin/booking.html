@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>Admin</title>
+</head>
+<body>
+<form method="get">
+    <nav class="navbar navbar-expand-lg  navbar-dark bg-dark fixed-top navbar-custom" id="navigation"
+         style="background: #2d3b47">
+        <a class="navbar-brand" href="/index">Terra familia</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/find-room">Номера и цены</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/comments">Отзывы</a>
+                </li>
+            </ul>
+            <ul sec:authorize="hasRole('ADMIN')" class="navbar-nav ml-auto navbar-buttons-group">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/clients">Клиенты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/booking">Брони</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/payment">Оплаты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/edit">Редактировать</a>
+                </li>
+            </ul>
+            <button class="btn btn-outline-success my-2 my-sm-0" th:formaction="@{/find-room}" type="submit">
+                Забронировать
+            </button>
+            <button sec:authorize="isAuthenticated()" class="btn btn-outline-primary my-2 my-sm-0"
+                    th:formaction="@{/logout}" type="submit" style="margin-left: 10px">
+                Выйти
+            </button>
+        </div>
+    </nav>
+</form>
+
+<div class="container-fluid" style="padding-top: 60px">
+
+    <form action="#" th:action="@{/admin/booking/}" th:object="${passportId}" method="post">
+        <div class="form-group row">
+            <div class="col-lg-4 col-xs-12" style="padding-top: 10px">
+                <input type="number" class="form-control" id="passportId" name="passportId"
+                       placeholder="Серия и номер паспорта">
+            </div>
+            <div class="col-lg-1 col-xs-6" style="padding-top: 10px">
+                <button type="submit" class="btn btn-primary">Найти</button>
+            </div>
+            <div class="col-lg-2 col-xs-6" style="padding-top: 10px">
+                <button type="submit" th:formaction="@{/admin/booking/all}" class="btn btn-primary ">Показать все
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+
+    <div th:if="${bookingDtos} != null">
+        <form action="#" th:action="@{/admin/booking/}" th:object="${bookingId}" method="post">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Дата заезда</th>
+                    <th scope="col">Дава выезда</th>
+                    <th scope="col">Номер комнаты</th>
+                    <th scope="col">ФИО</th>
+                    <th scope="col">Паспорт</th>
+                    <th scope="col">Сумма</th>
+                    <th scope="col">Оплата</th>
+                </tr>
+                </thead>
+                <tbody>
+                <div th:each="bookingDto: ${bookingDtos}">
+
+                    <tr>
+                        <td><span th:text="${bookingDto.startDate}"/></td>
+                        <td><span th:text="${bookingDto.endDate}"/></td>
+                        <td><span th:text="${bookingDto.roomNumber}"/></td>
+                        <td><span th:text="${bookingDto.getFullName()}"/></td>
+                        <td><span th:text="${bookingDto.passportId}"/></td>
+                        <td><span th:text="${bookingDto.price}"/></td>
+                        <td>
+                            <div class="btn-group  btn-group-lg" role="group">
+                                <button type="submit" th:formaction="@{/admin/booking/pay/} + ${bookingDto.bookingId}"
+                                        class="btn btn-secondary"
+                                        th:data-confirm-pay="|Оплатить бронирование?|"
+                                        onclick="if (!confirm(this.getAttribute('data-confirm-pay'))) return false">
+                                    Оплачено
+                                </button>
+                                <button type="submit"
+                                        th:formaction="@{/admin/booking/delete/} + ${bookingDto.bookingId}"
+                                        class="btn btn-danger"
+                                        th:data-confirm-delete="|Удалить бронирование?|"
+                                        onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                    Удалить
+                                </button>
+                            </div>
+
+                        </td>
+                    </tr>
+
+                </div>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+</div>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+</html>

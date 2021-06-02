@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css"
+          rel="stylesheet"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>Booked</title>
+</head>
+<body>
+
+<form th:if="${booked}" method="get">
+    <div class="card text-center">
+
+        <div class="card-body">
+            <h5 class="card-title"> Комната успешно забронирована!</h5>
+            <p class="card-text"> Комната №<span th:text="${booking.roomNumber}"/> забронирована с <span
+                    th:text="${booking.startDate}"/> по <span th:text="${booking.endDate}"/></p>
+            <p> Хорошего отдыха!</p>
+            <button type="submit" class="btn btn-primary" th:formaction="@{/index}">Вернуться</button>
+        </div>
+        <div class="card-footer text-muted">
+            Отменить бронирование можно по телефону +7 (999) 999-99-99
+        </div>
+    </div>
+
+</form>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+.room-main-img {
+    width: 50%;
+    height: auto;
+}
+
+.datepicker-block {
+    background: #d8ebff;
+    padding-bottom: 15px;
+}
+
+.book-room-button-block {
+    position: absolute;
+    bottom: 10px;
+}
+
+#rooms-header {
+    margin-left: 15px;
+}
+
+.room-view {
+    margin-top: 25px;
+}

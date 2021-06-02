@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Отзывы</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/animate.css">
+</head>
+<body>
+<form method="get">
+    <nav class="navbar navbar-expand-lg  navbar-dark bg-dark fixed-top navbar-custom" id="navigation" style="background: #2d3b47">
+        <a class="navbar-brand" href="/index">Terra familia</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/find-room">Номера и цены</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/comments">Отзывы</a>
+                </li>
+            </ul>
+            <ul sec:authorize="hasRole('ADMIN')" class="navbar-nav ml-auto navbar-buttons-group">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/clients">Клиенты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/booking">Брони</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/payment">Оплаты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/edit">Редактировать</a>
+                </li>
+            </ul>
+            <button class="btn btn-outline-success my-2 my-sm-0" th:formaction="@{/find-room}" type="submit">
+                Забронировать
+            </button>
+            <button sec:authorize="isAuthenticated()" class="btn btn-outline-primary my-2 my-sm-0"
+                    th:formaction="@{/logout}" type="submit" style="margin-left: 10px">
+                Выйти
+            </button>
+        </div>
+    </nav>
+</form>
+
+<div class="container-fluid" style="padding-top: 55px">
+
+    <div class="row">
+        <div class="col-lg-2 col-xs-0"></div>
+        <div id="accordion" class="col-lg-8 col-xs-12" style="margin-top: 15px">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                                aria-expanded="false" aria-controls="collapseOne">
+                            Оставить отзыв
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <form action="#" th:action="@{/comments}" th:object="${feedbackDto}" method="post">
+                            <div class="form-group row col-lg-6 col-xs-12">
+                                <label for="roomNumber" class="col-6">Номер комнаты</label>
+                                <select field="*{roomNumber}" id="roomNumber" class="form-control col-6"
+                                        name="roomNumber">
+                                    <option th:each="i : ${#numbers.sequence(1, 4)}" th:value="${i}" th:text="${i}"
+                                            th:selected="${i==1}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group col-lg-6 col-xs-12">
+                                <input class="form-control" type="text" name="name" field="*{name}" id="name"
+                                       placeholder="Имя" autocomplete="off">
+                            </div>
+                            <div class="form-group col-12">
+                                <textarea class="form-control" type="text" name="comment" field="*{comment}"
+                                          id="comment" placeholder="Отзыв" autocomplete="off"></textarea>
+                            </div>
+                            <div class="form-group col-12">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" th:name="isLike"
+                                           id="isLike" checked/>
+                                    <label class="form-check-label" for="isLike">Like</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Отправить</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="room1-tab" data-toggle="tab" href="#room1Comments" role="tab"
+                           aria-controls="home" aria-selected="true">Комната 1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="room2-tab" data-toggle="tab" href="#room2Comments" role="tab"
+                           aria-controls="profile" aria-selected="false">Комната 2</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="room3-tab" data-toggle="tab" href="#room3Comments" role="tab"
+                           aria-controls="contact" aria-selected="false">Комната 3</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="room4-tab" data-toggle="tab" href="#room4Comments" role="tab"
+                           aria-controls="contact" aria-selected="false">Комната 4</a>
+                    </li>
+                </ul>
+
+
+                <div class="tab-content" id="myTabContent">
+
+                    <div class="tab-pane fade show active" id="room1Comments" role="tabpanel"
+                         aria-labelledby="room1-tab">
+                        <div th:switch="${roomNumberToFeedbacks.get(1).size()}">
+                            <h4 th:case="0">Нет отзывов</h4>
+                            <div th:case="*">
+                                <div style="height: 15px"></div>
+                                <form action="#" th:action="@{/comments/}" th:object="${feedbackId}" method="post">
+                                    <div th:each="feedback: ${roomNumberToFeedbacks.get(1)}">
+
+
+                                        <div th:if="${feedback.isLike == true}" class="card wow fadeInUp"
+                                             data-wow-offset="40"
+                                             style="background: #eaffe7">
+                                            <div class="card-body">
+                                                <button sec:authorize="hasRole('ADMIN')" type="submit"
+                                                        th:formaction="@{/comments/delete/} + ${feedback.id}"
+                                                        th:data-confirm-delete="|Удалить отзыв?|"
+                                                        style="position: absolute; right: 10px;"
+                                                        onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                    &#10006;
+                                                </button>
+                                                <h5 class="card-title" th:text="${feedback.name}"/>
+                                                <p class="card-text"
+                                                   th:utext="${#strings.replace(#strings.escapeXml(feedback.comment),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+                                            </div>
+                                        </div>
+                                        <div th:if="${feedback.isLike == false}" class="card wow fadeInUp"
+                                             data-wow-offset="40"
+                                             style="background: #ffeaea">
+                                            <div class="card-body">
+                                                <button sec:authorize="hasRole('ADMIN')" type="submit"
+                                                        th:formaction="@{/comments/delete/} + ${feedback.id}"
+                                                        th:data-confirm-delete="|Удалить отзыв?|"
+                                                        style="position: absolute; right: 10px;"
+                                                        onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                    &#10006;
+                                                </button>
+                                                <h5 class="card-title" th:text="${feedback.name}"/>
+                                                <p class="card-text"
+                                                   th:utext="${#strings.replace(#strings.escapeXml(feedback.comment),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+                                            </div>
+                                        </div>
+                                        <div style="height: 15px"></div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade show" id="room2Comments" role="tabpanel"
+                         aria-labelledby="room2-tab">
+                        <div th:switch="${roomNumberToFeedbacks.get(2).size()}">
+                            <h4 th:case="0">Нет отзывов</h4>
+                            <div th:case="*">
+                                <div style="height: 15px"></div>
+                                <div th:each="feedback: ${roomNumberToFeedbacks.get(2)}">
+                                    <div th:if="${feedback.isLike == true}" class="card wow fadeInUp"
+                                         data-wow-offset="40"
+                                         style="background: #eaffe7">
+                                        <div class="card-body">
+                                            <button sec:authorize="hasRole('ADMIN')" type="submit"
+                                                    th:formaction="@{/comments/delete/} + ${feedback.id}"
+                                                    th:data-confirm-delete="|Удалить отзыв?|"
+                                                    style="position: absolute; right: 10px;"
+                                                    onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                &#10006;
+                                            </button>
+                                            <h5 class="card-title" th:text="${feedback.name}"/>
+                                            <p class="card-text"
+                                               th:utext="${#strings.replace(#strings.escapeXml(feedback.comment),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+                                        </div>
+                                    </div>
+                                    <div th:if="${feedback.isLike == false}" class="card wow fadeInUp"
+                                         data-wow-offset="40"
+                                         style="background: #ffeaea">
+                                        <div class="card-body">
+                                            <button sec:authorize="hasRole('ADMIN')" type="submit"
+                                                    th:formaction="@{/comments/delete/} + ${feedback.id}"
+                                                    th:data-confirm-delete="|Удалить отзыв?|"
+                                                    style="position: absolute; right: 10px;"
+                                                    onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                &#10006;
+                                            </button>
+                                            <h5 class="card-title" th:text="${feedback.name}"/>
+                                            <p class="card-text"
+                                               th:utext="${#strings.replace(#strings.escapeXml(feedback.comment),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+                                        </div>
+                                    </div>
+                                    <div style="height: 15px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade show" id="room3Comments" role="tabpanel"
+                         aria-labelledby="room3-tab">
+                        <div th:switch="${roomNumberToFeedbacks.get(3).size()}">
+                            <h4 th:case="0">Нет отзывов</h4>
+                            <div th:case="*">
+                                <div style="height: 15px"></div>
+                                <div th:each="feedback: ${roomNumberToFeedbacks.get(3)}">
+                                    <div th:if="${feedback.isLike == true}" class="card wow fadeInUp"
+                                         data-wow-offset="40"
+                                         style="background: #eaffe7">
+                                        <div class="card-body">
+                                            <button sec:authorize="hasRole('ADMIN')" type="submit"
+                                                    th:formaction="@{/comments/delete/} + ${feedback.id}"
+                                                    th:data-confirm-delete="|Удалить отзыв?|"
+                                                    style="position: absolute; right: 10px;"
+                                                    onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                &#10006;
+                                            </button>
+                                            <h5 class="card-title" th:text="${feedback.name}"/>
+                                            <p class="card-text"
+                                               th:utext="${#strings.replace(#strings.escapeXml(feedback.comment),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+                                        </div>
+                                    </div>
+                                    <div th:if="${feedback.isLike == false}" class="card wow fadeInUp"
+                                         data-wow-offset="40"
+                                         style="background: #ffeaea">
+                                        <div class="card-body">
+                                            <button sec:authorize="hasRole('ADMIN')" type="submit"
+                                                    th:formaction="@{/comments/delete/} + ${feedback.id}"
+                                                    th:data-confirm-delete="|Удалить отзыв?|"
+                                                    style="position: absolute; right: 10px;"
+                                                    onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                &#10006;
+                                            </button>
+                                            <h5 class="card-title" th:text="${feedback.name}"/>
+                                            <p class="card-text"
+                                               th:utext="${#strings.replace(#strings.escapeXml(feedback.comment),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+                                        </div>
+                                    </div>
+                                    <div style="height: 15px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade show" id="room4Comments" role="tabpanel"
+                         aria-labelledby="room4-tab">
+                        <div th:switch="${roomNumberToFeedbacks.get(4).size()}">
+                            <h4 th:case="0">Нет отзывов</h4>
+                            <div th:case="*">
+                                <div style="height: 15px"></div>
+                                <div th:each="feedback: ${roomNumberToFeedbacks.get(4)}">
+                                    <div th:if="${feedback.isLike == true}" class="card wow fadeInUp"
+                                         data-wow-offset="40"
+                                         style="background: #eaffe7">
+                                        <div class="card-body">
+                                            <button sec:authorize="hasRole('ADMIN')" type="submit"
+                                                    th:formaction="@{/comments/delete/} + ${feedback.id}"
+                                                    th:data-confirm-delete="|Удалить отзыв?|"
+                                                    style="position: absolute; right: 10px;"
+                                                    onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                &#10006;
+                                            </button>
+                                            <h5 class="card-title" th:text="${feedback.name}"/>
+                                            <p class="card-text"
+                                               th:utext="${#strings.replace(#strings.escapeXml(feedback.comment),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+                                        </div>
+                                    </div>
+                                    <div th:if="${feedback.isLike == false}" class="card wow fadeInUp"
+                                         data-wow-offset="40"
+                                         style="background: #ffeaea">
+                                        <div class="card-body">
+                                            <button sec:authorize="hasRole('ADMIN')" type="submit"
+                                                    th:formaction="@{/comments/delete/} + ${feedback.id}"
+                                                    th:data-confirm-delete="|Удалить отзыв?|"
+                                                    style="position: absolute; right: 10px;"
+                                                    onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                &#10006;
+                                            </button>
+                                            <h5 class="card-title" th:text="${feedback.name}"/>
+                                            <p class="card-text"
+                                               th:utext="${#strings.replace(#strings.escapeXml(feedback.comment),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+                                        </div>
+                                    </div>
+                                    <div style="height: 15px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+<script src="/js/wow.min.js"></script>
+<script>
+    new WOW().init();
+</script>
+</body>
+</html>

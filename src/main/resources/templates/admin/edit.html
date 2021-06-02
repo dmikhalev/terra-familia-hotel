@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>Edit content</title>
+</head>
+<body>
+<form method="get">
+    <nav class="navbar navbar-expand-lg  navbar-dark bg-dark fixed-top navbar-custom" id="navigation" style="background: #2d3b47">
+        <a class="navbar-brand" href="/index">Terra familia</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/find-room">Номера и цены</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/comments">Отзывы</a>
+                </li>
+            </ul>
+            <ul sec:authorize="hasRole('ADMIN')" class="navbar-nav ml-auto navbar-buttons-group">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/clients">Клиенты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/booking">Брони</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/payment">Оплаты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/edit">Редактировать</a>
+                </li>
+            </ul>
+            <button class="btn btn-outline-success my-2 my-sm-0" th:formaction="@{/find-room}" type="submit">
+                Забронировать
+            </button>
+            <button sec:authorize="isAuthenticated()" class="btn btn-outline-primary my-2 my-sm-0"
+                    th:formaction="@{/logout}" type="submit" style="margin-left: 10px">
+                Выйти
+            </button>
+        </div>
+    </nav>
+</form>
+
+
+<div class="container-fluid" style="padding-top: 60px">
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-hotel-tab" data-toggle="tab" href="#nav-hotel" role="tab" aria-controls="nav-hotel" aria-selected="true">Отель</a>
+            <a class="nav-item nav-link" id="nav-room1-tab" data-toggle="tab" href="#nav-room1" role="tab" aria-controls="nav-room1" aria-selected="false">Комната 1</a>
+            <a class="nav-item nav-link" id="nav-room2-tab" data-toggle="tab" href="#nav-room2" role="tab" aria-controls="nav-room2" aria-selected="false">Комната 2</a>
+            <a class="nav-item nav-link" id="nav-room3-tab" data-toggle="tab" href="#nav-room3" role="tab" aria-controls="nav-room3" aria-selected="false">Комната 3</a>
+            <a class="nav-item nav-link" id="nav-room4-tab" data-toggle="tab" href="#nav-room4" role="tab" aria-controls="nav-room4" aria-selected="false">Комната 4</a>
+            <a class="nav-item nav-link" id="nav-amenities-tab" data-toggle="tab" href="#nav-amenities" role="tab" aria-controls="nav-amenities" aria-selected="false">Удобства</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent" style="padding-top: 20px">
+
+        <div class="tab-pane fade show active" id="nav-hotel" role="tabpanel" aria-labelledby="nav-hotel-tab">
+            <h4>Редактирование отеля</h4>
+            <form th:object="${hotelDto}" method="post" style="padding-top: 20px">
+                <div class="form-group row">
+                    <label class="col-1" for="hotelDescription">Описание</label>
+                    <input class="form-control col-11" type="text" name="description" field="*{description}" id="hotelDescription"
+                           autocomplete="off" th:value="${hotel.description}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="hotelAddress">Адрес</label>
+                    <input class="form-control col-11" type="text" name="address" field="*{address}" id="hotelAddress"
+                           autocomplete="off" th:value="${hotel.address}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="hotelPhoneNumber">Тел.</label>
+                    <input class="form-control col-11" type="text" name="phoneNumber" field="*{phoneNumber}" id="hotelPhoneNumber"
+                           autocomplete="off" th:value="${hotel.phoneNumber}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="hotelEmail">Эл. почта</label>
+                    <input class="form-control col-11" type="email" name="email" field="*{email}" id="hotelEmail"
+                           autocomplete="off" th:value="${hotel.email}">
+                </div>
+                <button type="submit" class="btn btn-primary" th:formaction="@{/admin/edit/hotel}">Сохранить</button>
+            </form>
+        </div>
+
+        <div class="tab-pane fade" id="nav-room1" role="tabpanel" aria-labelledby="nav-room1-tab">
+            <h4>Редактирование комнаты №1</h4>
+            <form th:object="${roomDto}" method="post" style="padding-top: 20px">
+                <div class="form-group row">
+                    <label class="col-1" for="room1Description">Описание</label>
+                    <input class="form-control col-11" type="text" name="description" field="*{description}" id="room1Description"
+                           autocomplete="off" th:value="${room1.description}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room1Cost">Цена</label>
+                    <input class="form-control col-11" type="number" name="cost" field="*{cost}" id="room1Cost"
+                           autocomplete="off" th:value="${room1.cost}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room1Discount">Скидка</label>
+                    <input class="form-control col-11" type="number" name="discount" field="*{discount}" id="room1Discount"
+                           autocomplete="off" th:value="${room1.discount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room1SingleBeds">1-ных краватей</label>
+                    <input class="form-control col-11" type="number" name="singleBedsCount" field="*{singleBedsCount}" id="room1SingleBeds"
+                           autocomplete="off" th:value="${room1.singleBedsCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room1DoubleBeds">2-ных краватей</label>
+                    <input class="form-control col-11" type="number" name="doubleBedsCount" field="*{doubleBedsCount}" id="room1DoubleBeds"
+                           autocomplete="off" th:value="${room1.doubleBedsCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room1AdultCount">Взрослых</label>
+                    <input class="form-control col-11" type="number" name="adultCount" field="*{adultCount}" id="room1AdultCount"
+                           autocomplete="off" th:value="${room1.adultCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room1ChildCount">Детей</label>
+                    <input class="form-control col-11" type="number" name="childCount" field="*{childCount}" id="room1ChildCount"
+                           autocomplete="off" th:value="${room1.childCount}">
+                </div>
+                <button type="submit" class="btn btn-primary" th:formaction="@{/admin/edit/room1}">
+                    Сохранить
+                </button>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="nav-room2" role="tabpanel" aria-labelledby="nav-room2-tab">
+            <h4>Редактирование комнаты №2</h4>
+            <form th:object="${roomDto}" method="post" style="padding-top: 20px">
+                <div class="form-group row">
+                    <label class="col-1" for="room2Description">Описание</label>
+                    <input class="form-control col-11" type="text" name="description" field="*{description}" id="room2Description"
+                           autocomplete="off" th:value="${room2.description}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room2Cost">Цена</label>
+                    <input class="form-control col-11" type="number" name="cost" field="*{cost}" id="room2Cost"
+                           autocomplete="off" th:value="${room2.cost}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room2Discount">Скидка</label>
+                    <input class="form-control col-11" type="number" name="discount" field="*{discount}" id="room2Discount"
+                           autocomplete="off" th:value="${room2.discount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room2SingleBeds">1-ных краватей</label>
+                    <input class="form-control col-11" type="number" name="singleBedsCount" field="*{singleBedsCount}" id="room2SingleBeds"
+                           autocomplete="off" th:value="${room2.singleBedsCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room2DoubleBeds">2-ных краватей</label>
+                    <input class="form-control col-11" type="number" name="doubleBedsCount" field="*{doubleBedsCount}" id="room2DoubleBeds"
+                           autocomplete="off" th:value="${room2.doubleBedsCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room2AdultCount">Взрослых</label>
+                    <input class="form-control col-11" type="number" name="adultCount" field="*{adultCount}" id="room2AdultCount"
+                           autocomplete="off" th:value="${room2.adultCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room2ChildCount">Детей</label>
+                    <input class="form-control col-11" type="number" name="childCount" field="*{childCount}" id="room2ChildCount"
+                           autocomplete="off" th:value="${room2.childCount}">
+                </div>
+                <button type="submit" class="btn btn-primary" th:formaction="@{/admin/edit/room2}">
+                    Сохранить
+                </button>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="nav-room3" role="tabpanel" aria-labelledby="nav-room3-tab">
+            <h4>Редактирование комнаты №3</h4>
+            <form th:object="${roomDto}" method="post" style="padding-top: 20px">
+                <div class="form-group row">
+                    <label class="col-1" for="room3Description">Описание</label>
+                    <input class="form-control col-11" type="text" name="description" field="*{description}" id="room3Description"
+                           autocomplete="off" th:value="${room3.description}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room3Cost">Цена</label>
+                    <input class="form-control col-11" type="number" name="cost" field="*{cost}" id="room3Cost"
+                           autocomplete="off" th:value="${room3.cost}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room3Discount">Скидка</label>
+                    <input class="form-control col-11" type="number" name="discount" field="*{discount}" id="room3Discount"
+                           autocomplete="off" th:value="${room3.discount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room3SingleBeds">1-ных краватей</label>
+                    <input class="form-control col-11" type="number" name="singleBedsCount" field="*{singleBedsCount}" id="room3SingleBeds"
+                           autocomplete="off" th:value="${room3.singleBedsCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room3DoubleBeds">2-ных краватей</label>
+                    <input class="form-control col-11" type="number" name="doubleBedsCount" field="*{doubleBedsCount}" id="room3DoubleBeds"
+                           autocomplete="off" th:value="${room3.doubleBedsCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room3AdultCount">Взрослых</label>
+                    <input class="form-control col-11" type="number" name="adultCount" field="*{adultCount}" id="room3AdultCount"
+                           autocomplete="off" th:value="${room3.adultCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room3ChildCount">Детей</label>
+                    <input class="form-control col-11" type="number" name="childCount" field="*{childCount}" id="room3ChildCount"
+                           autocomplete="off" th:value="${room3.childCount}">
+                </div>
+                <button type="submit" class="btn btn-primary" th:formaction="@{/admin/edit/room3}">
+                    Сохранить
+                </button>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="nav-room4" role="tabpanel" aria-labelledby="nav-room4-tab">
+            <h4>Редактирование комнаты №4</h4>
+            <form th:object="${roomDto}" method="post" style="padding-top: 20px">
+                <div class="form-group row">
+                    <label class="col-1" for="room4Description">Описание</label>
+                    <input class="form-control col-11" type="text" name="description" field="*{description}" id="room4Description"
+                           autocomplete="off" th:value="${room4.description}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room4Cost">Цена</label>
+                    <input class="form-control col-11" type="number" name="cost" field="*{cost}" id="room4Cost"
+                           autocomplete="off" th:value="${room4.cost}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room4Discount">Скидка</label>
+                    <input class="form-control col-11" type="number" name="discount" field="*{discount}" id="room4Discount"
+                           autocomplete="off" th:value="${room4.discount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room4SingleBeds">1-ных краватей</label>
+                    <input class="form-control col-11" type="number" name="singleBedsCount" field="*{singleBedsCount}" id="room4SingleBeds"
+                           autocomplete="off" th:value="${room4.singleBedsCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room4DoubleBeds">2-ных краватей</label>
+                    <input class="form-control col-11" type="number" name="doubleBedsCount" field="*{doubleBedsCount}" id="room4DoubleBeds"
+                           autocomplete="off" th:value="${room4.doubleBedsCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room4AdultCount">Взрослых</label>
+                    <input class="form-control col-11" type="number" name="adultCount" field="*{adultCount}" id="room4AdultCount"
+                           autocomplete="off" th:value="${room4.adultCount}">
+                </div>
+                <div class="form-group row">
+                    <label class="col-1" for="room4ChildCount">Детей</label>
+                    <input class="form-control col-11" type="number" name="childCount" field="*{childCount}" id="room4ChildCount"
+                           autocomplete="off" th:value="${room4.childCount}">
+                </div>
+                <button type="submit" class="btn btn-primary" th:formaction="@{/admin/edit/room4}">
+                    Сохранить
+                </button>
+            </form>
+        </div>
+
+
+        <div class="tab-pane fade" id="nav-amenities" role="tabpanel" aria-labelledby="nav-amenities-tab">
+            <h4>Редактирование удобств</h4>
+            <form th:object="${amenitiesDto}" method="post" style="padding-top: 20px">
+
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Название</th>
+                        <th scope="col">Комната 1</th>
+                        <th scope="col">Комната 2</th>
+                        <th scope="col">Комната 3</th>
+                        <th scope="col">Комната 4</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="a, itemStat : ${amenitiesDto.amenitiesRows}">
+                        <input hidden th:name="|amenitiesRows[${itemStat.index}].id|" th:value="${a.getId()}"/>
+
+                        <td>
+                            <input th:name="|amenitiesRows[${itemStat.index}].name|" th:value="${a.getName()}">
+                        </td>
+
+                        <td>
+                            <input type="checkbox" name="|amenitiesRows[${itemStat.index}].isInRoom1|"
+                                   th:checked="${a.isInRoom1()}"/>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="|amenitiesRows[${itemStat.index}].isInRoom2|"
+                                   th:checked="${a.isInRoom2()}"/>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="|amenitiesRows[${itemStat.index}].isInRoom3|"
+                                   th:checked="${a.isInRoom3()}"/>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="|amenitiesRows[${itemStat.index}].isInRoom4|"
+                                   th:checked="${a.isInRoom4()}"/>
+                        </td>
+
+                        <td>
+                            <button type="submit" th:formaction="@{/admin/edit/amenities/delete/} + ${a.getId()}"
+                                    class="btn btn-danger"
+                                    th:data-confirm-delete="|Удалить удобство &quot;${a.getName()}&quot;?|"
+                                    onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                Удалить
+                            </button>
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <button type="submit" class="btn btn-primary" th:formaction="@{/admin/edit/amenities}">
+                    Сохранить
+                </button>
+            </form>
+
+            <div class="row" style="padding-top: 15px; padding-bottom: 20px">
+                <div class="col-lg-4"></div>
+                <form class="col-lg-4 col-xs-12 row" th:object="${amenitiesDto}" method="post"
+                      style="background: #efffec; padding-top: 10px; border-width: 1px 1px 0 1px;border-style: solid; border-color: #2d3b47">
+                    <div class="form-group col-12">
+                        <input class="form-control" type="text" name="name" field="*{name}" id="name"
+                               placeholder="Название" autocomplete="off">
+                    </div>
+                    <div class="form-group col-6">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" th:name="isInRoom1" id="isInRoom1"/>
+                            <label class="form-check-label" for="isInRoom1">Комната 1</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-6">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" th:name="isInRoom2" id="isInRoom2"/>
+                            <label class="form-check-label" for="isInRoom2">Комната 2</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-6">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" th:name="isInRoom3" id="isInRoom3"/>
+                            <label class="form-check-label" for="isInRoom3">Комната 3</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-6">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" th:name="isInRoom4" id="isInRoom4"/>
+                            <label class="form-check-label" for="isInRoom4">Комната 4</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-12" style="text-align: center; ">
+                        <button type="submit" class="btn btn-success" th:formaction="@{/admin/edit/amenities/add}">
+                            Добавить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+</html>

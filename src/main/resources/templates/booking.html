@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css"
+          rel="stylesheet"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/find-room.css"/>
+    <link rel="stylesheet" href="/css/booking.css"/>
+    <title>Book room</title>
+</head>
+<body>
+<form method="get">
+    <nav class="navbar navbar-expand-lg  navbar-dark bg-dark fixed-top navbar-custom" id="navigation" style="background: #2d3b47">
+        <a class="navbar-brand" href="/index">Terra familia</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/find-room">Номера и цены</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/comments">Отзывы</a>
+                </li>
+            </ul>
+            <ul sec:authorize="hasRole('ADMIN')" class="navbar-nav ml-auto navbar-buttons-group">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/clients">Клиенты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/booking">Брони</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/payment">Оплаты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/edit">Редактировать</a>
+                </li>
+            </ul>
+            <button class="btn btn-outline-success my-2 my-sm-0" th:formaction="@{/find-room}" type="submit">
+                Забронировать
+            </button>
+            <button sec:authorize="isAuthenticated()" class="btn btn-outline-primary my-2 my-sm-0"
+                    th:formaction="@{/logout}" type="submit" style="margin-left: 10px">
+                Выйти
+            </button>
+        </div>
+    </nav>
+</form>
+
+
+<div class="container-fluid" style="padding-top: 55px">
+    <div class="row">
+        <div class="col-lg-3 col-xs-12 datepicker-block">
+            <section class="sticky-top" style="top: 60px;">
+                <div style="height: 15px"></div>
+                <h3>Бронирование</h3>
+                <div style="height: 5px"></div>
+                <form action="#" th:action="@{/booking/} + ${room.getNumber()}" th:object="${bookingDto}" method="post">
+
+                    <p>С <span th:text="${startDate}"/> по <span th:text="${endDate}"/></p>
+                    <p>Общая стоимость: <span th:text="${price}"/> руб.</p>
+
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="firstName" field="*{firstName}" id="firstName"
+                               placeholder="Имя"
+                               autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="lastName" field="*{lastName}" id="lastName"
+                               placeholder="Фамилия"
+                               autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="number" name="passportId" field="*{passportId}" id="passportId"
+                               placeholder="Серия и номер паспорта" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="phoneNumber" field="*{phoneNumber}"
+                               id="phoneNumber"
+                               placeholder="Тел. номер"
+                               autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="email" name="email" field="*{email}" id="email"
+                               placeholder="Email"
+                               autocomplete="off">
+                    </div>
+                    <div class="form-group row">
+                        <label for="age" class="col-4">Возраст</label>
+                        <select field="*{age}" id="age" class="form-control col-7" name="age" onfocus='this.size=5;'
+                                onblur='this.size=1;'
+                                onchange='this.size=1; this.blur();'>
+                            <option th:each="i : ${#numbers.sequence(18, 99)}" th:value="${i}" th:text="${i}"
+                                    th:selected="${i==18}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-4" for="gender">Пол</label>
+                        <select field="*{gender}" id="gender" class="form-control col-7" name="gender">
+                            <option value="male">Муж</option>
+                            <option value="female">Жен</option>
+                        </select>
+                    </div>
+                    <div class="book-room-block">
+                        <button type="submit" class="btn  btn-success"
+                                th:formaction="@{/booking/success/} + ${room.getNumber()}">Забронировать
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+
+        <div class="col-lg-9 col-xs-12">
+
+            <div class="col-12 row room-view">
+                <div class="col-lg-7 col-xs-12 ">
+                    <div id="roomCarouse" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img class="d-block w-100" th:src="${roomImgNames.get(0)}"
+                                     alt="Первый слайд">
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" th:src="${roomImgNames.get(1)}"
+                                     alt="Второй слайд">
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" th:src="${roomImgNames.get(2)}"
+                                     alt="Третий слайд">
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" th:src="${roomImgNames.get(3)}"
+                                     alt="Четвертый слайд">
+                            </div>
+                            <div class="carousel-item" th:if="${roomImgNames.size() > 4}">
+                                <img class="d-block w-100" th:src="${roomImgNames.get(4)}"
+                                     alt="Пятый слайд">
+                            </div>
+                        </div>
+
+
+                        <a class="carousel-control-prev" href="#roomCarouse" role="button"
+                           data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#roomCarouse" role="button"
+                           data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+
+                </div>
+                <div class="col-lg-5 col-xs-12 ">
+                    <h4>Комната <span th:text="${room.number}"/></h4>
+                    <ul class="list-unsettled">
+                        <li th:if="${room.singleBedsCount} > 0">
+                            <i class="fa fa-caret-right pr-10 text-colored"></i>Односпальные кровати:
+                            <span th:text="${room.singleBedsCount}"/></li>
+
+                        <li th:if="${room.doubleBedsCount} > 0">
+                            <i class="fa fa-caret-right pr-10 text-colored"></i>Двуспальные кровати:
+                            <span th:text="${room.doubleBedsCount}"/></li>
+
+                        <div th:each="amenities: ${room.amenities}">
+                            <li><i class="fa fa-caret-right pr-10 text-colored"></i>
+                                <span th:text="${amenities.name}"/>
+                            </li>
+                        </div>
+                    </ul>
+                    <div class="room-price-block">
+                        <h5>Стоимость за сутки: <span th:text="${room.cost}-${room.discount}"/>руб.</h5>
+                    </div>
+                    <div class="book-room-button-block">
+                    </div>
+                </div>
+                <div class="col-12 text-justify">
+                    <h5 style="margin-top: 5px">Описание:</h5>
+                    <span th:text="${room.description}"/>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+</html>
